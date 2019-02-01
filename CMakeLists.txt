@@ -459,7 +459,13 @@ target_link_libraries(
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   target_link_libraries(watchman "-framework CoreServices")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  target_link_libraries(watchman shlwapi.lib advapi32.lib dbghelp.lib)
+  find_package(gflags CONFIG REQUIRED)
+  find_package(Boost COMPONENTS thread context REQUIRED)
+  find_package(double-conversion CONFIG REQUIRED)
+
+  target_link_libraries(watchman shlwapi.lib advapi32.lib dbghelp.lib
+    double-conversion::double-conversion Boost::thread Boost::context
+    gflags_shared)
 endif()
 if(PCRE_FOUND)
   target_link_libraries(watchman ${PCRE_LIBRARY})
